@@ -32,7 +32,7 @@ rclc_executor_t arm_executor_pub, hand_executor_pub;
 rcl_timer_t arm_timer, hand_timer;
 
 // Global variables shared between the microROS task and the arm control task
-double joint_positions[NUM_ALL_SERVOS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+double joint_positions[NUM_ALL_SERVOS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 #define RCCHECK(fn)                    \
     {                                  \
