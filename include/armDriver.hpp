@@ -1,43 +1,21 @@
 #pragma once
-#include <Adafruit_PWMServoDriver.h>
+#include <ESP32Servo.h>  // 替換Adafruit_PWMServoDriver
 
 #include <params.hpp>
 
 /*
- * Use Adafruit_PWMServoDriver to control multiple servos.
- * Pin : use I2C , SDA 21 SCL 22
- *
+ * Use ESP32 direct servo control
+ * Connect servos directly to ESP32 GPIO pins
  */
 
-/**
- * @class ArmManager
- * @brief Manages the servos of a robotic arm using the Adafruit PWM Servo Driver.
- *
- * This class provides methods to initialize and control multiple servos connected to a
- * robotic arm. It allows setting target angles for each servo and moves the servos
- * incrementally towards their target angles.
- *
- * @details
- * The ArmManager class handles the initialization of the Adafruit PWM Servo Driver,
- * sets the PWM frequency, and manages the angles of the servos. It ensures that the
- * servos move smoothly by incrementing their angles in small steps.
- *
- * @note
- * The servo angles are constrained within the specified minimum and maximum angles
- * to prevent damage to the servos or the robotic arm.
- *
- * @param numServos The number of servos to manage.
- * @param servoMinAngles An array of minimum angles for each servo.
- * @param servoMaxAngles An array of maximum angles for each servo.
- * @param servoInitAngles An array of initial angles for each servo.
- */
 class ArmManager {
    private:
     static const uint16_t SERVO_MIN_PULSE_WIDTH = 500;
     static const uint16_t SERVO_MAX_PULSE_WIDTH = 2500;
 
-    Adafruit_PWMServoDriver pwm;
+    Servo* servos;  // 替換Adafruit_PWMServoDriver
     uint8_t numServos;
+    uint8_t* servoPins;  // 新增: 儲存伺服馬達的GPIO引腳
 
     uint8_t *servoTargetAngles;
     float *servoCurrentAngles;
@@ -57,13 +35,17 @@ class ArmManager {
      * @brief Constructs an ArmManager object.
      *
      * @param numServos The number of servos to manage.
+     * @param servoPins Array of GPIO pins connected to each servo.
      * @param servoMinAngles An array of minimum angles for each servo.
      * @param servoMaxAngles An array of maximum angles for each servo.
      * @param servoInitAngles An array of initial angles for each servo.
      */
     ArmManager(
-        const uint8_t numServos, const uint8_t servoMinAngles[],
-        const uint8_t servoMaxAngles[], const uint8_t servoInitAngles[]);
+        const uint8_t numServos, const uint8_t servoPins[],
+        const uint8_t servoMinAngles[], const uint8_t servoMaxAngles[],
+        const uint8_t servoInitAngles[]);
+
+    ~ArmManager();
 
     /**
      * @brief Sets the target angle for a specified servo.

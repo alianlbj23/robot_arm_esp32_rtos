@@ -24,6 +24,10 @@
 #define USE_UART2  // Comment this line to disable UART2 for debugging
 ///< End define
 
+// 定義伺服馬達引腳
+// 修改這些數字為您想要使用的ESP32 GPIO引腳
+const uint8_t servoPins[] = {23, 25, 26, 27, 32, 33, 13};  // 根據您的實際連接修改
+
 #ifndef IS_RIGHT
 #define ROS_DOMAIN_ID 0
 #define NODE_NAME "micro_ros_platformio_left_node"
@@ -37,11 +41,11 @@ const uint8_t servoInitAngles[] = {170, 10, 100, 10, 100, 100, 130, 50, 50, 50, 
 #define ROS_DOMAIN_ID 0
 #define NODE_NAME "micro_ros_platformio_right_node"
 #define NAMESPACE ""
-#define TOPIC_NAME "/right"
+#define TOPIC_NAME "/robot_arm"
 #define REPUBLISH_TOPIC_NAME "/right_republish"
-const uint8_t servoMinAngles[] = {0, 80, 0, 0, 0, 0, 60, 15, 15, 15, 15};
-const uint8_t servoMaxAngles[] = {180, 180, 180, 120, 180, 180, 165, 120, 120, 120, 120};
-const uint8_t servoInitAngles[] = {10, 170, 80, 10, 80, 80, 60, 120, 120, 120, 120};
+const uint8_t servoMinAngles[] = {0, 80, 0, 0, 0, 0, 0};
+const uint8_t servoMaxAngles[] = {180, 180, 180, 120, 180, 180, 180};
+const uint8_t servoInitAngles[] = {10, 170, 80, 10, 80, 90, 90};
 #endif
 
 #define ESP32_LED 2
@@ -49,11 +53,14 @@ const uint8_t servoInitAngles[] = {10, 170, 80, 10, 80, 80, 60, 120, 120, 120, 1
 #define HAND_BIAS 6
 const float ARM_MOVEMENT_STEP = 10.0;
 const float HAND_MOVEMENT_STEP = 180.0;
-const size_t NUM_SERVOS = 11;
+const size_t NUM_SERVOS = 7;
 
 static_assert(sizeof(servoMinAngles) == NUM_SERVOS * sizeof(uint8_t));
 static_assert(sizeof(servoMaxAngles) == NUM_SERVOS * sizeof(uint8_t));
 static_assert(sizeof(servoInitAngles) == NUM_SERVOS * sizeof(uint8_t));
+
+// 確保引腳數量與伺服馬達數量相同
+static_assert(sizeof(servoPins) == NUM_SERVOS * sizeof(uint8_t));
 
 enum states {
     WAITING_AGENT,

@@ -2,44 +2,55 @@
 
 void ArmManager::setServoAngle(uint8_t servoNum, float angle) {
     if (servoNum < this->numServos) {
-        pwm.writeMicroseconds(
-            servoNum,
-            map(
-                angle, 0, 180,
-                SERVO_MIN_PULSE_WIDTH, SERVO_MAX_PULSE_WIDTH));
+        this->servos[servoNum].write(angle);  // 直接使用ESP32Servo庫控制
     }
 }
 
 ArmManager::ArmManager(
-    const uint8_t numServos, const uint8_t servoMinAngles[],
-    const uint8_t servoMaxAngles[], const uint8_t servoInitAngles[]) {
-    // Initialize the Adafruit_PWMServoDriver object
+    const uint8_t numServos, const uint8_t servoPins[],
+    const uint8_t servoMinAngles[], const uint8_t servoMaxAngles[],
+    const uint8_t servoInitAngles[]) {
+    // 初始化成員變數
     this->numServos = numServos;
 
-    this->pwm.begin();
-    this->pwm.setOscillatorFrequency(27000000);
-    this->pwm.setPWMFreq(50);  // Set the PWM frequency to 50Hz
+    // 分配記憶體
+    this->servos = new Servo[numServos];
+    this->servoPins = new uint8_t[numServos];
     this->servoTargetAngles = new uint8_t[numServos];
     this->servoCurrentAngles = new float[numServos];
     this->servoMinAngles = new uint8_t[numServos];
     this->servoMaxAngles = new uint8_t[numServos];
-    // Set servoMinAngles and servoMaxAngles
+
+    // 設置並初始化每個伺服馬達
     for (uint8_t i = 0; i < numServos; ++i) {
+        this->servoPins[i] = servoPins[i];
         this->servoMinAngles[i] = servoMinAngles[i];
         this->servoMaxAngles[i] = servoMaxAngles[i];
         this->servoTargetAngles[i] = servoInitAngles[i];
-        // this->servoTargetAngles[i] = 90;
-        /*************************************************************************
-        You cannot set the current angles by reading the initial angles directly.
-        You can set the current angles to be "near" the initial angles
-            to ensure that the robot arm doesn't perform redundant actions.
-        If you set the current angles to be the same as the initial angles,
-            then the robot arm will not move when starting up.
-        **************************************************************************/
+
+        // 將當前角度設為初始角度+1，確保啟動時有動作
         this->servoCurrentAngles[i] = (float)servoInitAngles[i] + 1;
+
+        // 初始化伺服馬達：連接到指定GPIO引腳並設置PWM範圍
+        this->servos[i].setPeriodHertz(50);  // 設置PWM頻率為50Hz
+        this->servos[i].attach(servoPins[i], SERVO_MIN_PULSE_WIDTH, SERVO_MAX_PULSE_WIDTH);
     }
 }
 
+ArmManager::~ArmManager() {
+    // 釋放記憶體
+    for (uint8_t i = 0; i < this->numServos; ++i) {
+        this->servos[i].detach();
+    }
+    delete[] this->servos;
+    delete[] this->servoPins;
+    delete[] this->servoTargetAngles;
+    delete[] this->servoCurrentAngles;
+    delete[] this->servoMinAngles;
+    delete[] this->servoMaxAngles;
+}
+
+// 其他函數內容不變
 void ArmManager::setServoTargetAngle(uint8_t servoNum, uint8_t targetAngle) {
     if (servoNum < this->numServos) {
         this->servoTargetAngles[servoNum] = constrain(targetAngle, servoMinAngles[servoNum],
@@ -54,7 +65,6 @@ void ArmManager::changeServoTargetAngle(uint8_t servoNum, int8_t biasAngle) {
     }
 }
 
-// Get the current angles of all servos, update currentAngles into passed array
 void ArmManager::getCurrentAngles(float currentAngles[]) {
     for (uint8_t i = 0; i < this->numServos; ++i) {
         currentAngles[i] = servoCurrentAngles[i];
@@ -62,6 +72,7 @@ void ArmManager::getCurrentAngles(float currentAngles[]) {
 }
 
 void ArmManager::moveArm() {
+    // moveArm函數內容保持不變
     uint8_t i = 0;
     for (; i < HAND_BIAS; ++i) {
         if (abs(this->servoCurrentAngles[i] - this->servoTargetAngles[i]) >= ARM_MOVEMENT_STEP) {
@@ -70,8 +81,6 @@ void ArmManager::moveArm() {
         } else {
             this->servoCurrentAngles[i] = this->servoTargetAngles[i];
         }
-        // this line will occur some delay to let device work not properly
-        // please make sure you had connect to PCA9685 pwm driver.
         setServoAngle(i, this->servoCurrentAngles[i]);
     }
     for (; i < this->numServos; ++i) {
@@ -81,8 +90,6 @@ void ArmManager::moveArm() {
         } else {
             this->servoCurrentAngles[i] = this->servoTargetAngles[i];
         }
-        // this line will occur some delay to let device work not properly
-        // please make sure you had connect to PCA9685 pwm driver.
         setServoAngle(i, this->servoCurrentAngles[i]);
     }
 }

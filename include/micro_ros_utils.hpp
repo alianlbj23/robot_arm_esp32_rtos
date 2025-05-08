@@ -45,7 +45,7 @@ bool create_node(rcl_allocator_t *allocator,
                  rcl_init_options_t *init_options,
                  rclc_support_t *support,
                  rcl_node_t *node,
-                 size_t domain_id = ROS_DOMAIN_ID,
+                 size_t domain_id = 1,
                  const char *node_name = NODE_NAME,
                  const char *namespace_ = NAMESPACE);
 
