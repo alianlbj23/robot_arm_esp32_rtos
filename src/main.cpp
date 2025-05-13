@@ -33,7 +33,7 @@ SemaphoreHandle_t xJointPositionsMutex = NULL;
 #endif
 
 // Global variables shared between the microROS task and the arm control task
-double joint_positions[NUM_SERVOS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+double joint_positions[NUM_SERVOS] = {0.0, 0.0, 0.0, 0.0, 0.0};
 uint64_t msg_cnt = 0;
 
 states state;
