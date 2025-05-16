@@ -30,26 +30,26 @@
 #define NAMESPACE ""
 #define TOPIC_NAME "/left"
 #define REPUBLISH_TOPIC_NAME "/left_republish"
-const uint8_t servoMinAngles[] = {0, 0, 0, 0, 0, 0, 20, 50, 50, 50, 50};
-const uint8_t servoMaxAngles[] = {180, 90, 180, 120, 180, 180, 130, 155, 155, 155, 155};
-const uint8_t servoInitAngles[] = {170, 10, 100, 10, 100, 100, 130, 50, 50, 50, 50};
+const uint8_t servoMinAngles[] = {0, 0, 0, 0, 0, 0};
+const uint8_t servoMaxAngles[] = {180, 90, 180, 120, 180, 180};
+const uint8_t servoInitAngles[] = {170, 10, 100, 10, 100, 100};
 #else
-#define ROS_DOMAIN_ID 0
+#define ROS_DOMAIN_ID 1
 #define NODE_NAME "micro_ros_platformio_right_node"
 #define NAMESPACE ""
-#define TOPIC_NAME "/right"
+#define TOPIC_NAME "/robot_arm"
 #define REPUBLISH_TOPIC_NAME "/right_republish"
-const uint8_t servoMinAngles[] = {0, 80, 0, 0, 0, 0, 60, 15, 15, 15, 15};
-const uint8_t servoMaxAngles[] = {180, 180, 180, 120, 180, 180, 165, 120, 120, 120, 120};
-const uint8_t servoInitAngles[] = {10, 170, 80, 10, 80, 80, 60, 120, 120, 120, 120};
+const uint8_t servoMinAngles[] = {0, 80, 0, 0, 0, 0};
+const uint8_t servoMaxAngles[] = {180, 180, 180, 120, 180, 180};
+const uint8_t servoInitAngles[] = {10, 170, 80, 10, 80, 80};
 #endif
 
 #define ESP32_LED 2
 #define UPDATE_ARM_DELAY 1.0
-#define HAND_BIAS 6
+#define HAND_BIAS 7
 const float ARM_MOVEMENT_STEP = 10.0;
 const float HAND_MOVEMENT_STEP = 180.0;
-const size_t NUM_SERVOS = 11;
+const size_t NUM_SERVOS = 7;
 
 static_assert(sizeof(servoMinAngles) == NUM_SERVOS * sizeof(uint8_t));
 static_assert(sizeof(servoMaxAngles) == NUM_SERVOS * sizeof(uint8_t));
