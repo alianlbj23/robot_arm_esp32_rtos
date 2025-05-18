@@ -39,9 +39,9 @@ const uint8_t servoInitAngles[] = {170, 10, 100, 10, 100, 100, 130, 50, 50, 50, 
 #define NAMESPACE ""
 #define TOPIC_NAME "/robot_arm"
 #define REPUBLISH_TOPIC_NAME "/right_republish"
-const uint8_t servoMinAngles[] = {0, 0, 0, 0, 70};
-const uint8_t servoMaxAngles[] = {180, 180, 180, 180, 180};
-const uint8_t servoInitAngles[] = {90, 30, 160, 90, 10};
+const uint8_t servoMinAngles[] = {0, 0, 0, 0, 0};
+const uint8_t servoMaxAngles[] = {180, 180, 180, 180, 90};
+const uint8_t servoInitAngles[] = {90, 30, 160, 180, 10};
 #endif
 
 #define ESP32_LED 2
