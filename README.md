@@ -83,3 +83,6 @@ This will increase the overall workload on the middleware.
 
 We provide several simple scripts to publish joint angles to `ARM_TOPIC_NAME` and `HAND_TOPIC_NAME` to test your robot arm.
 
+```
+docker run -it --rm --name microros_agent   --device /dev/usb_robot_arm:/dev/ttyUSB0   --network compose_my_bridge_network   -e ROS_DOMAIN_ID=1   microros/micro-ros-agent:humble   serial --dev /dev/ttyUSB0 -b 921600 -v6
+```
